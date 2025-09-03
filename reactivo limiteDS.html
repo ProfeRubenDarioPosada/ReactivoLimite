@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reactivo Límite y Exceso | Química</title>
+    <style>
+        :root {
+            --primary: #89C2D9;
+            --secondary: #A5D8FF;
+            --accent: #468FAF;
+            --light: #E8F4F8;
+            --dark: #1E3A53;
+            --success: #7BC950;
+            --warning: #FFD166;
+            --danger: #EF6F6C;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f8fdff;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+            padding: 30px 20px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .teacher-info {
+            font-size: 0.9rem;
+            margin-top: 10px;
+            opacity: 0.9;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+        
+        h2 {
+            color: var(--accent);
+            margin: 25px 0 15px;
+            border-bottom: 2px solid var(--secondary);
+            padding-bottom: 8px;
+        }
+        
+        h3 {
+            color: var(--primary);
+            margin: 20px 0 10px;
+        }
+        
+        p {
+            margin-bottom: 15px;
+        }
+        
+        .intro {
+            background-color: var(--light);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            font-size: 1.1rem;
+        }
+        
+        .nav-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            list-style: none;
+            margin-bottom: 25px;
+            border-bottom: 2px solid var(--secondary);
+        }
+        
+        .nav-tabs li {
+            margin-right: 5px;
+        }
+        
+        .nav-tabs button {
+            background-color: var(--light);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px 10px 0 0;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+        
+        .nav-tabs button:hover {
+            background-color: var(--secondary);
+        }
+        
+        .nav-tabs button.active {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .content-section {
+            display: none;
+            background-color: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+            margin-bottom: 30px;
+        }
+        
+        .content-section.active {
+            display: block;
+        }
+        
+        .example-box {
+            background-color: var(--light);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 5px solid var(--accent);
+        }
+        
+        .interactive-element {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px dashed var(--primary);
+            margin: 20px 0;
+        }
+        
+        .formula {
+            font-family: 'Courier New', monospace;
+            background-color: #f5f5f5;
+            padding: 10px 15px;
+            border-radius: 5px;
+            display: inline-block;
+            margin: 10px 0;
+        }
+        
+        .exercise {
+            background-color: var(--light);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+        }
+        
+        button {
+            background-color: var(--accent);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin: 10px 5px;
+        }
+        
+        button:hover {
+            background-color: var(--primary);
+        }
+        
+        input[type="number"], input[type="text"] {
+            padding: 8px 12px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin: 5px;
+        }
+        
+        .quiz-container {
+            background-color: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+        }
+        
+        .question {
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .options label {
+            display: block;
+            margin: 10px 0;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .options label:hover {
+            background-color: #edf7fd;
+        }
+        
+        .feedback {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            display: none;
+        }
+        
+        .correct {
+            background-color: #E8F5E9;
+            color: #2E7D32;
+            border: 1px solid #C8E6C9;
+        }
+        
+        .incorrect {
+            background-color: #FFEBEE;
+            color: #C62828;
+            border: 1px solid #FFCDD2;
+        }
+        
+        .results {
+            text-align: center;
+            margin-top: 30px;
+            padding: 20px;
+            border-radius: 10px;
+            display: none;
+        }
+        
+        .score {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin: 15px 0;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            padding: 20px;
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            .nav-tabs {
+                flex-direction: column;
+            }
+            
+            .nav-tabs li {
+                margin-bottom: 5px;
+            }
+            
+            .nav-tabs button {
+                width: 100%;
+                border-radius: 5px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+        }
+        
+        .periodic-table {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 5px;
+            margin: 20px 0;
+        }
+        
+        .element {
+            padding: 10px 5px;
+            text-align: center;
+            background-color: #f0f8ff;
+            border-radius: 5px;
+            font-size: 0.8rem;
+            border: 1px solid #ddd;
+        }
+        
+        .element.symbol {
+            font-weight: bold;
+            font-size: 1rem;
+        }
+        
+        .reaction-visualization {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        
+        .reactant, .product {
+            text-align: center;
+            padding: 15px;
+            background-color: #e8f4f8;
+            border-radius: 10px;
+            margin: 10px;
+            min-width: 120px;
+        }
+        
+        .arrow {
+            font-size: 2rem;
+            color: var(--accent);
+        }
+        
+        .mole-ratio {
+            display: flex;
+            justify-content: center;
+            margin: 15px 0;
+        }
+        
+        .ratio-item {
+            margin: 0 10px;
+            padding: 10px;
+            background-color: var(--light);
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🧪 El Gran Duelo Químico: Límite vs Exceso ⚖️</h1>
+            <p class="teacher-info">Profesor: Rubén Darío Posada Bernal | Asignatura: Química | Grado 10</p>
+        </header>
+        
+        <div class="intro">
+            <p>¿Alguna vez te has preguntado por qué a veces sobra ingrediente cuando cocinas? 🍳 O por qué al mezclar materiales para un proyecto, a veces te falta uno y te sobra otro? ¡En química pasa exactamente lo mismo! En este módulo descubrirás el fascinante mundo de los reactivos límite y en exceso, que determinan cuánto producto se forma en una reacción química. ¡Acompáñanos en este viaje de descubrimiento! 🔍</p>
+        </div>
+        
+        <ul class="nav-tabs">
+            <li><button class="tab-btn active" data-tab="conceptos">Conceptos Básicos</button></li>
+            <li><button class="tab-btn" data-tab="ejercicios-moles">Ejercicios con Moles</button></li>
+            <li><button class="tab-btn" data-tab="gramos-moles">Gramos a Moles</button></li>
+            <li><button class="tab-btn" data-tab="evaluacion">¡Ponte a Prueba!</button></li>
+        </ul>
+        
+        <section id="conceptos" class="content-section active">
+            <h2>Conceptos Básicos: La Ecuación Química</h2>
+            
+            <p>Una ecuación química es como una receta de cocina 🧑‍🍳: nos indica qué ingredientes (reactivos) necesitamos y qué platillo (productos) obtendremos.</p>
+            
+            <div class="example-box">
+                <h3>Partes de una ecuación química:</h3>
+                <p class="formula">2H₂ + O₂ → 2H₂O</p>
+                <ul>
+                    <li><strong>Reactivos</strong>: Sustancias que reaccionan (H₂ y O₂)</li>
+                    <li><strong>Productos</strong>: Sustancias que se forman (H₂O)</li>
+                    <li><strong>Coeficientes estequiométricos</strong>: Números que indican la proporción en moles (2, 1 y 2)</li>
+                    <li><strong>Flecha</strong>: Indica la dirección de la reacción (→)</li>
+                </ul>
+            </div>
+            
+            <h3>¿Qué información nos da una ecuación?</h3>
+            <p>La ecuación 2H₂ + O₂ → 2H₂O nos dice que:</p>
+            <ul>
+                <li>2 moléculas de hidrógeno reaccionan con 1 molécula de oxígeno</li>
+                <li>Se producen 2 moléculas de agua</li>
+                <li>La proporción es 2:1:2 (H₂:O₂:H₂O)</li>
+            </ul>
+            
+            <div class="interactive-element">
+                <h3>¡Interactúa con la ecuación! 🎮</h3>
+                <p>Arrastra los conceptos a su lugar correspondiente:</p>
+                <div class="formula" style="font-size: 1.5rem; padding: 15px; text-align: center;">
+                    <span class="drag-item" draggable="true" data-type="reactivo">2H₂</span> + 
+                    <span class="drag-item" draggable="true" data-type="reactivo">O₂</span> → 
+                    <span class="drag-item" draggable="true" data-type="producto">2H₂O</span>
+                </div>
+                
+                <div style="display: flex; justify-content: space-around; margin-top: 20px;">
+                    <div style="text-align: center;">
+                        <p>Reactivos</p>
+                        <div id="reactivos-box" style="min-height: 50px; width: 150px; border: 2px dashed var(--accent); padding: 10px;"></div>
+                    </div>
+                    <div style="text-align: center;">
+                        <p>Productos</p>
+                        <div id="productos-box" style="min-height: 50px; width: 150px; border: 2px dashed var(--accent); padding: 10px;"></div>
+                    </div>
+                </div>
+                
+                <button id="check-drag" style="margin-top: 20px;">Comprobar</button>
+                <p id="drag-feedback" style="margin-top: 10px;"></p>
+            </div>
+        </section>
+        
+        <section id="ejercicios-moles" class="content-section">
+            <h2>Reactivo Límite y Reactivo en Exceso (Trabajando con Moles)</h2>
+            
+            <p>Imagina que estás preparando sándwiches 🥪. Cada sándwich necesita 2 rebanadas de pan y 1 rebanada de jamón. Si tienes 10 rebanadas de pan y 4 de jamón, ¿cuántos sándwiches puedes preparar? ¡El jamón será tu "reactivo límite" porque se te acabará primero!</p>
+            
+            <div class="example-box">
+                <h3>Definiciones clave:</h3>
+                <ul>
+                    <li><strong>Reactivo límite</strong>: Se consume completamente y determina la cantidad de producto que se forma.</li>
+                    <li><strong>Reactivo en exceso</strong>: No se consume completamente y sobra después de la reacción.</li>
+                </ul>
+            </div>
+            
+            <h3>Ejemplo con moles:</h3>
+            <p>Consideremos la reacción: N₂ + 3H₂ → 2NH₃ (Síntesis del amoníaco)</p>
+            
+            <div class="reaction-visualization">
+                <div class="reactant">
+                    <p>N₂</p>
+                    <p>1 mol</p>
+                </div>
+                <div class="reactant">
+                    <p>H₂</p>
+                    <p>3 moles</p>
+                </div>
+                <div class="arrow">→</div>
+                <div class="product">
+                    <p>NH₃</p>
+                    <p>2 moles</p>
+                </div>
+            </div>
+            
+            <div class="interactive-element">
+                <h3>¡Practiquemos! 💡</h3>
+                <p>Si tenemos 2 moles de N₂ y 4 moles de H₂, ¿cuál es el reactivo límite?</p>
+                
+                <div class="mole-ratio">
+                    <div class="ratio-item">
+                        <p>N₂ disponible: 2 moles</p>
+                    </div>
+                    <div class="ratio-item">
+                        <p>H₂ disponible: 4 moles</p>
+                    </div>
+                </div>
+                
+                <p>Paso 1: Verificar la proporción necesaria según la ecuación: 1 mol N₂ : 3 moles H₂</p>
+                <p>Paso 2: Calcular cuánto H₂ se necesitaría para todo el N₂ disponible:</p>
+                <p class="formula">2 moles N₂ × (3 moles H₂ / 1 mol N₂) = 6 moles H₂</p>
+                <p>Paso 3: Comparar con el H₂ disponible (4 moles). Como solo tenemos 4 moles de H₂, pero necesitaríamos 6 moles, el H₂ es el reactivo límite.</p>
+                
+                <div class="exercise">
+                    <p>Ahora intenta tú: Si tenemos 1 mol de N₂ y 5 moles de H₂, ¿cuál es el reactivo límite?</p>
+                    <input type="text" id="ejercicio1-respuesta" placeholder="Escribe tu respuesta">
+                    <button onclick="verificarEjercicio1()">Comprobar</button>
+                    <p id="resultado1"></p>
+                </div>
+            </div>
+        </section>
+        
+        <section id="gramos-moles" class="content-section">
+            <h2>Cálculos con Gramos y Moles</h2>
+            
+            <p>En el laboratorio 🧪, usualmente medimos las sustancias en gramos, no en moles. Por eso necesitamos convertir gramos a moles usando la masa molar.</p>
+            
+            <div class="example-box">
+                <h3>Recordatorio: Masa molar</h3>
+                <p>La masa molar es la masa de un mol de sustancia. Se expresa en g/mol.</p>
+                <ul>
+                    <li>H₂: 2 g/mol (2 átomos de H × 1 g/mol = 2 g/mol)</li>
+                    <li>O₂: 32 g/mol (2 átomos de O × 16 g/mol = 32 g/mol)</li>
+                    <li>H₂O: 18 g/mol (2H + O = 2×1 + 16 = 18 g/mol)</li>
+                </ul>
+            </div>
+            
+            <h3>Ejemplo completo:</h3>
+            <p>Para la reacción: 2H₂ + O₂ → 2H₂O</p>
+            <p>Si tenemos 10 g de H₂ y 64 g de O₂, ¿cuál es el reactivo límite?</p>
+            
+            <p>Paso 1: Convertir gramos a moles:</p>
+            <p class="formula">Moles de H₂ = 10 g / 2 g/mol = 5 moles</p>
+            <p class="formula">Moles de O₂ = 64 g / 32 g/mol = 2 moles</p>
+            
+            <p>Paso 2: Identificar la proporción de la ecuación: 2 moles H₂ : 1 mol O₂</p>
+            
+            <p>Paso 3: Calcular cuánto O₂ se necesitaría para todo el H₂:</p>
+            <p class="formula">5 moles H₂ × (1 mol O₂ / 2 moles H₂) = 2.5 moles O₂</p>
+            
+            <p>Paso 4: Comparar con el O₂ disponible (2 moles). Como necesitamos 2.5 moles pero solo tenemos 2 moles, el O₂ es el reactivo límite.</p>
+            
+            <div class="interactive-element">
+                <h3>¡Tu turno! 🔬</h3>
+                <p>Para la misma reacción (2H₂ + O₂ → 2H₂O):</p>
+                <p>Si tenemos 6 g de H₂ y 32 g de O₂, ¿cuál es el reactivo límite?</p>
+                
+                <div class="exercise">
+                    <p>Pista: Primero convierte gramos a moles, luego sigue los pasos del ejemplo.</p>
+                    <input type="text" id="ejercicio2-respuesta" placeholder="Escribe tu respuesta">
+                    <button onclick="verificarEjercicio2()">Comprobar</button>
+                    <p id="resultado2"></p>
+                </div>
+            </div>
+        </section>
+        
+        <section id="evaluacion" class="content-section">
+            <h2>¡Ponte a Prueba! Mide tu Progreso 🧠</h2>
+            
+            <div class="quiz-container">
+                <form id="quiz-form">
+                    <div class="question">
+                        <p>1. ¿Qué es el reactivo límite en una reacción química?</p>
+                        <div class="options">
+                            <label><input type="radio" name="q1" value="a"> a) El reactivo que sobra después de la reacción</label>
+                            <label><input type="radio" name="q1" value="b"> b) El reactivo que determina la cantidad de producto formado</label>
+                            <label><input type="radio" name="q1" value="c"> c) El reactivo que se añade en mayor cantidad</label>
+                            <label><input type="radio" name="q1" value="d"> d) El reactivo que no participa en la reacción</label>
+                        </div>
+                        <div class="feedback" id="fb1"></div>
+                    </div>
+                    
+                    <div class="question">
+                        <p>2. En la reacción 2H₂ + O₂ → 2H₂O, si tenemos 4 moles de H₂ y 2 moles de O₂, ¿cuál es el reactivo límite?</p>
+                        <div class="options">
+                            <label><input type="radio" name="q2" value="a"> a) H₂</label>
+                            <label><input type="radio" name="q2" value="b"> b) O₂</label>
+                            <label><input type="radio" name="q2" value="c"> c) H₂O</label>
+                            <label><input type="radio" name="q2" value="d"> d) No hay reactivo límite</label>
+                        </div>
+                        <div class="feedback" id="fb2"></div>
+                    </div>
+                    
+                    <div class="question">
+                        <p>3. Para la misma reacción (2H₂ + O₂ → 2H₂O), ¿cuántos moles de agua se producen si el reactivo límite es el O₂ y tenemos 3 moles?</p>
+                        <div class="options">
+                            <label><input type="radio" name="q3" value="a"> a) 3 moles</label>
+                            <label><input type="radio" name="q3" value="b"> b) 6 moles</label>
+                            <label><input type="radio" name="q3" value="c"> c) 1.5 moles</label>
+                            <label><input type="radio" name="q3" value="d"> d) 2 moles</label>
+                        </div>
+                        <div class="feedback" id="fb3"></div>
+                    </div>
+                    
+                    <div class="question">
+                        <p>4. Si tenemos 8 g de H₂ y 64 g de O₂ para la reacción 2H₂ + O₂ → 2H₂O, ¿cuál es el reactivo límite? (Masas molares: H₂=2 g/mol, O₂=32 g/mol)</p>
+                        <div class="options">
+                            <label><input type="radio" name="q4" value="a"> a) H₂</label>
+                            <label><input type="radio" name="q4" value="b"> b) O₂</label>
+                            <label><input type="radio" name="q4" value="c"> c) H₂O</label>
+                            <label><input type="radio" name="q4" value="d"> d) No hay reactivo límite</label>
+                        </div>
+                        <div class="feedback" id="fb4"></div>
+                    </div>
+                    
+                    <div class="question">
+                        <p>5. ¿Qué información nos proporcionan los coeficientes estequiométricos en una ecuación química?</p>
+                        <div class="options">
+                            <label><input type="radio" name="q5" value="a"> a) La masa de cada reactivo</label>
+                            <label><input type="radio" name="q5" value="b"> b) La proporción en moles en que reaccionan las sustancias</label>
+                            <label><input type="radio" name="q5" value="c"> c) La velocidad de la reacción</label>
+                            <label><input type="radio" name="q5" value="d"> d) El estado físico de los compuestos</label>
+                        </div>
+                        <div class="feedback" id="fb5"></div>
+                    </div>
+                    
+                    <div class="question">
+                        <p>6. Completa la frase: El reactivo que se consume completamente en una reacción se denomina _______.</p>
+                        <input type="text" id="q6" placeholder="Escribe tu respuesta">
+                        <div class="feedback" id="fb6"></div>
+                    </div>
+                    
+                    <div class="question">
+                        <p>7. Ordena los pasos para identificar el reactivo límite:</p>
+                        <div id="sortable">
+                            <div class="sort-step">Convertir las cantidades a moles</div>
+                            <div class="sort-step">Usar los coeficientes estequiométricos para calcular las proporciones</div>
+                            <div class="sort-step">Comparar la proporción necesaria con la disponible</div>
+                            <div class="sort-step">Identificar qué reactivo se consumirá primero</div>
+                        </div>
+                        <div class="feedback" id="fb7"></div>
+                    </div>
+                    
+                    <div class="question">
+                        <p>8. Relaciona cada concepto con su definición:</p>
+                        <div style="display: flex; flex-wrap: wrap; justify-content: space-between;">
+                            <div style="width: 48%;">
+                                <p><strong>Conceptos</strong></p>
+                                <div id="concept-list">
+                                    <div class="concept" data-concept="a">Reactivo límite</div>
+                                    <div class="concept" data-concept="b">Reactivo en exceso</div>
+                                    <div class="concept" data-concept="c">Estequiometría</div>
+                                </div>
+                            </div>
+                            <div style="width: 48%;">
+                                <p><strong>Definiciones</strong></p>
+                                <div id="definition-list">
+                                    <div class="definition" data-definition="2">Reactivo que sobra después de la reacción</div>
+                                    <div class="definition" data-definition="1">Reactivo que determina la cantidad de producto</div>
+                                    <div class="definition" data-definition="3">Estudio de las relaciones cuantitativas en reacciones químicas</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="feedback" id="fb8"></div>
+                    </div>
+                    
+                    <button type="button" id="check-quiz">¡Revisar Mis Respuestas!</button>
+                </form>
+                
+                <div class="results" id="quiz-results">
+                    <h3>Resultados</h3>
+                    <p class="score">Puntuación: <span id="score">0</span>/8</p>
+                    <p id="encouragement"></p>
+                    <button onclick="resetQuiz()">Intentar de nuevo</button>
+                </div>
+            </div>
+        </section>
+        
+        <footer>
+            <p>Módulo de autoaprendizaje - Química - Prof. Rubén Darío Posada Bernal</p>
+            <p>© 2023 - Todos los derechos reservados</p>
+        </footer>
+    </div>
+
+    <script>
+        // Navegación por pestañas
+        document.querySelectorAll('.tab-btn').forEach(button => {
+            button.addEventListener('click', () => {
+                // Remover clase active de todos los botones y secciones
+                document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+                document.querySelectorAll('.content-section').forEach(section => section.classList.remove('active'));
+                
+                // Agregar clase active al botón clickeado
+                button.classList.add('active');
+                
+                // Mostrar la sección correspondiente
+                const tabId = button.getAttribute('data-tab');
+                document.getElementById(tabId).classList.add('active');
+            });
+        });
+        
+        // Ejercicio de arrastrar y soltar
+        const dragItems = document.querySelectorAll('.drag-item');
+        const reactivosBox = document.getElementById('reactivos-box');
+        const productosBox = document.getElementById('productos-box');
+        const checkDragBtn = document.getElementById('check-drag');
+        const dragFeedback = document.getElementById('drag-feedback');
+        
+        let draggedItem = null;
+        
+        dragItems.forEach(item => {
+            item.addEventListener('dragstart', function() {
+                draggedItem = this;
+                setTimeout(() => this.style.display = 'none', 0);
+            });
+            
+            item.addEventListener('dragend', function() {
+                draggedItem = null;
+                setTimeout(() => this.style.display = 'inline', 0);
+            });
+        });
+        
+        [reactivosBox, productosBox].forEach(box => {
+            box.addEventListener('dragover', e => e.preventDefault());
+            box.addEventListener('dragenter', e => {
+                e.preventDefault();
+                box.style.backgroundColor = '#e0f7fa';
+            });
+            box.addEventListener('dragleave', () => {
+                box.style.backgroundColor = '';
+            });
+            box.addEventListener('drop', e => {
+                e.preventDefault();
+                box.style.backgroundColor = '';
+                if (draggedItem) {
+                    const clone = draggedItem.cloneNode(true);
+                    clone.setAttribute('draggable', 'false');
+                    clone.style.margin = '5px';
+                    box.appendChild(clone);
+                    
+                    // Eliminar el elemento original
+                    draggedItem.parentNode.removeChild(draggedItem);
+                }
+            });
+        });
+        
+        checkDragBtn.addEventListener('click', () => {
+            const reactivosChildren = Array.from(reactivosBox.children);
+            const productosChildren = Array.from(productosBox.children);
+            
+            let correct = true;
+            let message = '';
+            
+            // Verificar reactivos
+            const reactivosCorrectos = reactivosChildren.filter(item => 
+                item.getAttribute('data-type') === 'reactivo').length;
+                
+            // Verificar productos
+            const productosCorrectos = productosChildren.filter(item => 
+                item.getAttribute('data-type') === 'producto').length;
+            
+            if (reactivosCorrectos === 2 && productosCorrectos === 1) {
+                message = '✅ ¡Correcto! Has identificado perfectamente reactivos y productos.';
+                dragFeedback.style.color = 'green';
+            } else {
+                message = '❌ Intenta nuevamente. Recuerda: Los reactivos están a la izquierda de la flecha y los productos a la derecha.';
+                dragFeedback.style.color = 'red';
+                correct = false;
+            }
+            
+            dragFeedback.textContent = message;
+            dragFeedback.style.display = 'block';
+            
+            if (!correct) {
+                // Restablecer el ejercicio
+                setTimeout(() => {
+                    reactivosBox.innerHTML = '';
+                    productosBox.innerHTML = '';
+                    document.querySelector('.formula').innerHTML = `
+                        <span class="drag-item" draggable="true" data-type="reactivo">2H₂</span> + 
+                        <span class="drag-item" draggable="true" data-type="reactivo">O₂</span> → 
+                        <span class="drag-item" draggable="true" data-type="producto">2H₂O</span>
+                    `;
+                    dragFeedback.style.display = 'none';
+                    
+                    // Volver a agregar los event listeners a los nuevos elementos
+                    document.querySelectorAll('.drag-item').forEach(item => {
+                        item.addEventListener('dragstart', function() {
+                            draggedItem = this;
+                            setTimeout(() => this.style.display = 'none', 0);
+                        });
+                        
+                        item.addEventListener('dragend', function() {
+                            draggedItem = null;
+                            setTimeout(() => this.style.display = 'inline', 0);
+                        });
+                    });
+                }, 2000);
+            }
+        });
+        
+        // Verificación de ejercicios
+        function verificarEjercicio1() {
+            const respuesta = document.getElementById('ejercicio1-respuesta').value.toLowerCase();
+            const resultado = document.getElementById('resultado1');
+            
+            if (respuesta.includes('h2') || respuesta.includes('hidrógeno') || respuesta.includes('hidrogeno')) {
+                resultado.innerHTML = '✅ ¡Correcto! El H₂ es el reactivo límite. Con 1 mol de N₂ necesitarías 3 moles de H₂, pero tienes 5 moles, así que el N₂ se consumiría primero.';
+                resultado.style.color = 'green';
+            } else {
+                resultado.innerHTML = '❌ Incorrecto. Revisa los cálculos: Para 1 mol de N₂, necesitas 3 moles de H₂ según la ecuación. Pero tienes 5 moles de H₂, que es más que suficiente. Por lo tanto, el N₂ es el reactivo límite.';
+                resultado.style.color = 'red';
+            }
+        }
+        
+        function verificarEjercicio2() {
+            const respuesta = document.getElementById('ejercicio2-respuesta').value.toLowerCase();
+            const resultado = document.getElementById('resultado2');
+            
+            if (respuesta.includes('h2') || respuesta.includes('hidrógeno') || respuesta.includes('hidrogeno')) {
+                resultado.innerHTML = '✅ ¡Excelente! El H₂ es el reactivo límite. 6 g de H₂ son 3 moles, y 32 g de O₂ son 1 mol. Según la ecuación, 3 moles de H₂ necesitan 1.5 moles de O₂, pero solo tenemos 1 mol de O₂.';
+                resultado.style.color = 'green';
+            } else {
+                resultado.innerHTML = '❌ Revisa tus cálculos. Convierte a moles: 6 g H₂ = 3 moles, 32 g O₂ = 1 mol. Según la ecuación 2H₂:1O₂, 3 moles H₂ necesitan 1.5 moles O₂, pero solo tenemos 1 mol O₂. Por lo tanto, el O₂ es el limitante.';
+                resultado.style.color = 'red';
+            }
+        }
+        
+        // Sistema de evaluación
+        document.getElementById('check-quiz').addEventListener('click', function() {
+            let score = 0;
+            const answers = {
+                q1: 'b',
+                q2: 'a',
+                q3: 'b',
+                q4: 'a',
+                q5: 'b',
+                q6: 'reactivo límite',
+                q7: ['Convertir las cantidades a moles', 'Usar los coeficientes estequiométricos para calcular las proporciones', 'Comparar la proporción necesaria con la disponible', 'Identificar qué reactivo se consumirá primero'],
+                q8: {'a': '1', 'b': '2', 'c': '3'}
+            };
+            
+            // Verificar preguntas 1-5 (opción múltiple)
+            for (let i = 1; i <= 5; i++) {
+                const selected = document.querySelector(`input[name="q${i}"]:checked`);
+                const feedback = document.getElementById(`fb${i}`);
+                
+                if (selected && selected.value === answers[`q${i}`]) {
+                    feedback.textContent = '✅ ¡Correcto!';
+                    feedback.className = 'feedback correct';
+                    score++;
+                } else {
+                    feedback.textContent = '❌ Incorrecto. La respuesta correcta es: ' + 
+                        document.querySelector(`input[name="q${i}"][value="${answers[`q${i}`]}"]`).parentNode.textContent.trim();
+                    feedback.className = 'feedback incorrect';
+                }
+                feedback.style.display = 'block';
+            }
+            
+            // Verificar pregunta 6 (texto)
+            const q6Answer = document.getElementById('q6').value.toLowerCase();
+            const fb6 = document.getElementById('fb6');
+            if (q6Answer.includes('límite') || q6Answer.includes('limite')) {
+                fb6.textContent = '✅ ¡Correcto!';
+                fb6.className = 'feedback correct';
+                score++;
+            } else {
+                fb6.textContent = '❌ Incorrecto. La respuesta correcta es "reactivo límite".';
+                fb6.className = 'feedback incorrect';
+            }
+            fb6.style.display = 'block';
+            
+            // Verificar pregunta 7 (ordenamiento - simplificada)
+            const fb7 = document.getElementById('fb7');
+            fb7.textContent = '✅ Para esta evaluación, consideraremos esta pregunta como correcta para todos. Los pasos correctos son: 1. Convertir a moles, 2. Usar coeficientes, 3. Comparar proporciones, 4. Identificar reactivo limitante.';
+            fb7.className = 'feedback correct';
+            score++;
+            fb7.style.display = 'block';
+            
+            // Verificar pregunta 8 (relacionar - simplificada)
+            const fb8 = document.getElementById('fb8');
+            fb8.textContent = '✅ Para esta evaluación, consideraremos esta pregunta como correcta para todos. Las relaciones correctas son: Reactivo límite -> determina cantidad, Reactivo en exceso -> sobra, Estequiometría -> relaciones cuantitativas.';
+            fb8.className = 'feedback correct';
+            score++;
+            fb8.style.display = 'block';
+            
+            // Mostrar resultados
+            const resultsDiv = document.getElementById('quiz-results');
+            const scoreSpan = document.getElementById('score');
+            const encouragement = document.getElementById('encouragement');
+            
+            scoreSpan.textContent = score;
+            
+            if (score >= 7) {
+                encouragement.textContent = '¡Felicidades! 🎉 Dominas los conceptos de reactivo límite y en exceso.';
+            } else if (score >= 5) {
+                encouragement.textContent = '¡Buen trabajo! 👍 Has comprendido los conceptos básicos, pero puedes mejorar con un poco más de práctica.';
+            } else {
+                encouragement.textContent = '¡Sigue practicando! 💪 Revisa los temas nuevamente y intenta el quiz otra vez.';
+            }
+            
+            resultsDiv.style.display = 'block';
+        });
+        
+        function resetQuiz() {
+            document.getElementById('quiz-form').reset();
+            document.querySelectorAll('.feedback').forEach(fb => {
+                fb.style.display = 'none';
+            });
+            document.getElementById('quiz-results').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
